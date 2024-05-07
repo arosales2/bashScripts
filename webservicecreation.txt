@@ -34,7 +34,7 @@ node_hostname=$(curl http://169.254.169.254/latest/meta-data/hostname)
 
 # Configure Splunk
 echo "Configure Splunk..." | sudo tee /dev/kmsg
-#aws s3 cp s3://dedicated-align-env-sqa2-mes/splunkforwarder-8.2.5-77015bc7a462-Linux-x86_64.tgz /tmp/splunk_uf.tar.gz --quiet
+#aws s3 cp s3://dedicated-align-env-dev1-mes/splunkforwarder-8.2.5-77015bc7a462-Linux-x86_64.tgz /tmp/splunk_uf.tar.gz --quiet
 cd /tmp/
 wget https://mescorpdevstorage.blob.core.windows.net/installation/splunkforwarder-8.2.5-77015bc7a462-Linux-x86_64.tgz  --quiet
 tar -xzf /tmp/splunkforwarder-8.2.5-77015bc7a462-Linux-x86_64.tgz -C /opt
@@ -74,8 +74,8 @@ unzip third_party_tools.zip
 cd third_party_tools/
 cp installApp.zip /tmp/
 
-#aws s3 cp s3://"dedicated-align-env-sqa2-mes"/third_party_tools/installAPP.zip /tmp/
-#aws s3 cp s3://"dedicated-align-env-sqa2-mes"/WarFiles.zip /tmp/
+#aws s3 cp s3://"dedicated-align-env-dev1-mes"/third_party_tools/installAPP.zip /tmp/
+#aws s3 cp s3://"dedicated-align-env-dev1-mes"/WarFiles.zip /tmp/
 cd /tmp/
 wget https://mescorpdevstorage.blob.core.windows.net/installation/WarFiles.zip --quiet
 
@@ -103,9 +103,9 @@ unzip /tmp/installAPP/jboss-eap-7.0.zip -d /opt/ftpc10
 # Updating JBoss configuration
 echo "Update productioncentre.properties" | sudo tee /dev/kmsg
 AWS_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | cut -d\" -f4)
-MSSQL_SERVER=db-mes-corp.sqa2.misa.aligntech.com
-MSSQL_USER=$(aws ssm get-parameter --name "/sqa2/MSSQL_USER" --region "$AWS_REGION" --query Parameter.Value --output text)
-MSSQL_PASSWORD=$(aws ssm get-parameter --name "/sqa2/MSSQL_PASSWORD" --region "$AWS_REGION" --with-decryption --query Parameter.Value --output text)
+MSSQL_SERVER=db-mes-corp.dev1.misa.aligntech.com
+MSSQL_USER=$(aws ssm get-parameter --name "/dev1/MSSQL_USER" --region "$AWS_REGION" --query Parameter.Value --output text)
+MSSQL_PASSWORD=$(aws ssm get-parameter --name "/dev1/MSSQL_PASSWORD" --region "$AWS_REGION" --with-decryption --query Parameter.Value --output text)
 
 #aws s3 cp s3://dedicated-align-env-sqa1-mes/ws_Config/standalone-full.xml /opt/ftpc10/jboss-eap-7.0/standalone/configuration/
 cd /tmp/
@@ -166,7 +166,7 @@ cp /tmp//MESServices_Log4j2.xml /opt/ftpc10/jboss-eap-7.0/standalone/configurati
 
 # Create config to point to APP server for this Env
 cat <<-EOF > /opt/ftpc10/jboss-eap-7.0/standalone/configuration/mesws-config.properties
-MES.ServerURL=http://mes.corp.sqa2.misa.aligntech.com:8080
+MES.ServerURL=http://mes.corp.dev1.misa.aligntech.com:8080
 EOF
 
 echo "Start jboss service" | sudo tee /dev/kmsg
